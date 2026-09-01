@@ -1,4 +1,4 @@
-name: Deploy Firebase Function on Merge
+name: Deploy Cloud Run on Merge
 
 on:
   push:
@@ -18,7 +18,7 @@ jobs:
         with:
           node-version: 24
 
-      - name: Install root dependencies
+      - name: Install dependencies
         run: npm install
 
       - name: Run tests
@@ -32,22 +32,15 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      - name: Use Node.js 24
-        uses: actions/setup-node@v4
-        with:
-          node-version: 24
-
-      - name: Install Firebase CLI
-        run: npm install -g firebase-tools
-
-      - name: Install Functions dependencies
-        run: npm install
-        working-directory: functions
-
       - name: Authenticate to Google Cloud
         uses: google-github-actions/auth@v2
         with:
           credentials_json: ${{ secrets.FIREBASE_SERVICE_ACCOUNT_CI_CD_PIPELINE_ASSIGNMENT_24_3 }}
 
-      - name: Deploy production function
-        run: firebase deploy --only functions:app --project ci-cd-pipeline-assignment-24-3
+      - name: Deploy production to Cloud Run
+        uses: google-github-actions/deploy-cloudrun@v2
+        with:
+          service: express-production
+          region: us-central1
+          source: .
+          flags: --allow-unauthenticated
