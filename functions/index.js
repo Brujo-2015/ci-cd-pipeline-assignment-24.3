@@ -32,3 +32,4 @@ setGlobalOptions({ maxInstances: 10 });
 //   response.send("Hello from Firebase!");
 // });
 exports.app = onRequest(app);
+exports.appPreview = onRequest(app);
